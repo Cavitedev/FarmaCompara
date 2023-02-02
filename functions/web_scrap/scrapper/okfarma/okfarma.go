@@ -1,18 +1,17 @@
 package okfarma
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 
 	"cloud.google.com/go/firestore"
-	"github.com/Cavitedev/terraform_tuto/web_scrap/firestore_utils"
-	. "github.com/Cavitedev/terraform_tuto/web_scrap/scrapper/types"
-	"github.com/Cavitedev/terraform_tuto/web_scrap/utils"
+	"github.com/Cavitedev/farma-compara/web_scrap/firestore_utils"
+	. "github.com/Cavitedev/farma-compara/web_scrap/scrapper/types"
+	"github.com/Cavitedev/farma-compara/web_scrap/utils"
 	"github.com/gocolly/colly/v2"
 )
 
+const websiteName string = "okfarma"
 const Domain string = "okfarma.es"
 
 func Scrap(ref *firestore.CollectionRef) {
@@ -25,32 +24,28 @@ func Scrap(ref *firestore.CollectionRef) {
 		colly.AllowedDomains(Domain),
 	)
 
-	c.OnHTML("#product_list", func(h *colly.HTMLElement) {
-		log.Println("Product List")
+	c.OnHTML("a.product-name", func(h *colly.HTMLElement) {
+		item := Item{}
+		pageItem := WebsiteItem{}
+		pageItem.Url = h.Attr("href")
+		scrapDetailsPage(&item, &pageItem)
+		if item.WebsiteItems == nil {
+			item.WebsiteItems = make(map[string]WebsiteItem)
+		}
+		item.WebsiteItems[websiteName] = pageItem
+		items = append(items, item)
+		firestore_utils.UpdateItem(item, ref)
+		time.Sleep(50 * time.Millisecond)
+		h.Attr("class")
 
-		h.ForEach(".product-container", func(_ int, e *colly.HTMLElement) {
-			item := Item{}
-			pageItem := WebsiteItem{}
-			pageItem.Url = e.ChildAttr(".product-image-container a", "href")
-			scrapDetailsPage(&item, &pageItem)
-			if item.WebsiteItems == nil {
-				item.WebsiteItems = make(map[string]WebsiteItem)
-			}
-			item.WebsiteItems[Domain] = pageItem
-			items = append(items, item)
-			firestore_utils.UpdateItem(item, ref)
-			time.Sleep(50 * time.Millisecond)
-		})
 	})
 
-	url := buildPageUrl()
-	err := c.Visit(url)
-	if err != nil {
-		log.Printf("Error when visiting %v, err:%v", url, err)
-	}
+	c.OnError(func(r *colly.Response, err error) {
+		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
 
-	bytes, _ := json.Marshal(items)
-	log.Printf("%+v\n", string(bytes))
+	c.Visit("https://okfarma.es/higiene-corporal?id_category=14&n=10000")
+	log.Printf("Scrapped %v items", len(items))
 
 }
 
@@ -79,10 +74,4 @@ func scrapDetailsPage(item *Item, pageItem *WebsiteItem) {
 	})
 
 	c.Visit(pageItem.Url)
-}
-
-func buildPageUrl() string {
-
-	url := fmt.Sprintf("https://%v/medicamentos?id_category=3&n=1192", Domain)
-	return url
 }

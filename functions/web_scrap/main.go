@@ -3,43 +3,21 @@ package web_scrap
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
-	"github.com/Cavitedev/terraform_tuto/web_scrap/scrapper"
+	"github.com/Cavitedev/farma-compara/web_scrap/scrapper"
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 )
 
 var client *firestore.Client
 var ctx context.Context
 
-type IP struct {
-	Query string
-}
-
 func init() {
-
-	req, errGet := http.Get("http://ip-api.com/json/")
-	if errGet != nil {
-		log.Println(errGet.Error())
-	}
-	defer req.Body.Close()
-
-	body, errRead := ioutil.ReadAll(req.Body)
-	if errRead != nil {
-		log.Println(errRead.Error())
-	}
-
-	var ip IP
-	json.Unmarshal(body, &ip)
-
-	log.Println(ip.Query)
-
 	ctx = context.Background()
-	conf := &firebase.Config{ProjectID: "terraform-admin-28708"}
+	conf := &firebase.Config{ProjectID: "farma-compara"}
 
 	var err error
 

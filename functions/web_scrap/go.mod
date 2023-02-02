@@ -1,4 +1,4 @@
-module github.com/Cavitedev/terraform_tuto/web_scrap
+module github.com/Cavitedev/farma-compara/web_scrap
 
 go 1.19
 

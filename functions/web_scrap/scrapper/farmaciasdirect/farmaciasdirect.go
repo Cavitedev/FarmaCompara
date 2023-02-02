@@ -7,13 +7,15 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
-	"github.com/Cavitedev/terraform_tuto/web_scrap/firestore_utils"
-	. "github.com/Cavitedev/terraform_tuto/web_scrap/scrapper/types"
-	"github.com/Cavitedev/terraform_tuto/web_scrap/utils"
+	"github.com/Cavitedev/farma-compara/web_scrap/firestore_utils"
+	. "github.com/Cavitedev/farma-compara/web_scrap/scrapper/types"
+	"github.com/Cavitedev/farma-compara/web_scrap/utils"
 	"github.com/gocolly/colly/v2"
 )
 
+const websiteName string = "farmaciasdirect"
 const Domain string = "www.farmaciasdirect.com"
+const firstPage int = 1
 
 var lastPage int = 1
 
@@ -25,14 +27,16 @@ func Scrap(ref *firestore.CollectionRef) {
 		colly.AllowedDomains(Domain),
 	)
 
-	c.OnResponse(func(r *colly.Response) {
-		log.Printf("Web response")
+	c.OnError(func(r *colly.Response, err error) {
+		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+
 	})
 
 	c.OnHTML("#js-product-list", func(h *colly.HTMLElement) {
 		log.Println("Product List")
-		if lastPage == 1 {
-			pageStr := h.ChildTexts(".page-item")[4]
+		if lastPage == firstPage {
+			pageItems := h.ChildTexts(".page-item")
+			pageStr := pageItems[len(pageItems)-2]
 			lastPageI64, err := strconv.ParseInt(pageStr, 10, 32)
 			if err != nil {
 				log.Println("Could not parse page number")
@@ -50,13 +54,13 @@ func Scrap(ref *firestore.CollectionRef) {
 			if item.WebsiteItems == nil {
 				item.WebsiteItems = make(map[string]WebsiteItem)
 			}
-			item.WebsiteItems[Domain] = pageItem
+			item.WebsiteItems[websiteName] = pageItem
 			firestore_utils.UpdateItem(item, ref)
 			time.Sleep(50 * time.Millisecond)
 		})
 	})
 
-	for i := 1; i <= lastPage; i++ {
+	for i := firstPage; i <= lastPage; i++ {
 		url := buildPageUrl(i)
 		log.Println("Visit Page", i, " url:", url)
 		err := c.Visit(url)
