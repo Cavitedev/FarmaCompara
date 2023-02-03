@@ -1,8 +1,9 @@
-package dosfarma
+package farmaciaencasa
 
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -12,10 +13,10 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-const websiteName string = "dosfarma"
-const Domain string = "www.dosfarma.com"
+const websiteName string = "farmaciaencasa"
+const Domain string = "www.farmaciaencasaonline.es"
 
-var itemCount int = 1
+var lastPage int = 5
 var page int = 1
 
 func Scrap(ref *firestore.CollectionRef) {
@@ -28,15 +29,29 @@ func Scrap(ref *firestore.CollectionRef) {
 		colly.AllowedDomains(Domain),
 	)
 
-	c.OnHTML("#js-product-list", func(h *colly.HTMLElement) {
+	c.OnResponse(func(r *colly.Response) {
+		log.Printf("Visit URL:%v\n", r.Request.URL)
 
-		itemCount = 0
+	})
+
+	c.OnHTML(".pages", func(h *colly.HTMLElement) {
+		pagesLi := h.ChildTexts("li>a")
+		lastPageLi := pagesLi[len(pagesLi)-2]
+		lastPageI64, err := strconv.ParseInt(lastPageLi, 10, 32)
+		if err != nil {
+			log.Println("Error parsing " + lastPageLi)
+		}
+		lastPage = int(lastPageI64)
+
+	})
+
+	c.OnHTML(".itemgrid", func(h *colly.HTMLElement) {
 
 		h.ForEach(".item", func(_ int, e *colly.HTMLElement) {
 
 			item := Item{}
 			pageItem := WebsiteItem{}
-			pageItem.Url = e.ChildAttr(".product-thumbnail", "href")
+			pageItem.Url = e.ChildAttr(".product-name>a", "href")
 			scrapDetailsPage(&item, &pageItem)
 			if item.WebsiteItems == nil {
 				item.WebsiteItems = make(map[string]WebsiteItem)
@@ -46,17 +61,13 @@ func Scrap(ref *firestore.CollectionRef) {
 			firestore_utils.UpdateItem(item, ref)
 			time.Sleep(50 * time.Millisecond)
 			h.Attr("class")
-			itemCount++
 		})
-
-		log.Printf("Scrapped %v items", itemCount)
 
 	})
 
-	for itemCount > 0 {
-		c.Visit(fmt.Sprintf("https://www.dosfarma.com/higiene/corporal/?page=%v", page))
+	for page != lastPage+1 {
+		c.Visit(fmt.Sprintf("https://www.farmaciaencasaonline.es/corporal-cuidado-cuerpo-c-103_126.html?limit=60&p=%v", page))
 		page++
-		log.Printf("Scrapped %v items on page %v", itemCount, page)
 	}
 
 }
@@ -73,9 +84,9 @@ func scrapDetailsPage(item *Item, pageItem *WebsiteItem) {
 
 	})
 
-	c.OnHTML("#add-to-cart-or-refresh", func(h *colly.HTMLElement) {
+	c.OnHTML(".product-view", func(h *colly.HTMLElement) {
 
-		references := h.ChildTexts(".referencia")
+		references := h.ChildTexts(".sku>span>span")
 		if len(references) == 0 {
 			return
 		}
@@ -84,14 +95,17 @@ func scrapDetailsPage(item *Item, pageItem *WebsiteItem) {
 		currentTime := time.Now()
 		pageItem.LastUpdate = currentTime
 		pageItem.Image = h.ChildAttr("img", "src")
-		pageItem.Name = h.ChildText("h1")
+		pageItem.Name = h.ChildText(".product-name>h1")
 
-		price := h.ChildText(".final-price")
+		price := h.ChildText(".special-price>.price")
+		if price == "" {
+			price = h.ChildText(".product-type-data>div>.regular-price>.price")
+		}
 		pageItem.Price = utils.ParseSpanishNumberStrToNumber(price)
 
-		availableTexts := h.ChildTexts(".disponible")
+		availableTexts := h.ChildTexts(".availability>span")
 		if len(availableTexts) > 0 {
-			pageItem.Available = availableTexts[0] == "En stock"
+			pageItem.Available = availableTexts[0] == "En existencia"
 		}
 
 	})
