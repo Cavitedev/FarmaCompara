@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
-	"github.com/Cavitedev/farma-compara/web_scrap/firestore_utils"
-	. "github.com/Cavitedev/farma-compara/web_scrap/scrapper/types"
-	"github.com/Cavitedev/farma-compara/web_scrap/utils"
+	"github.com/cavitedev/farma-compara/web_scrap/firestore_utils"
+	. "github.com/cavitedev/farma-compara/web_scrap/scrapper/types"
+	"github.com/cavitedev/farma-compara/web_scrap/utils"
 	"github.com/gocolly/colly/v2"
 )
 

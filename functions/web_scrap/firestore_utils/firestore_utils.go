@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"cloud.google.com/go/firestore"
-	"github.com/Cavitedev/farma-compara/web_scrap/firestore_utils/transform"
-	"github.com/Cavitedev/farma-compara/web_scrap/scrapper/types"
+	"github.com/cavitedev/farma-compara/web_scrap/firestore_utils/transform"
+	"github.com/cavitedev/farma-compara/web_scrap/scrapper/types"
 )
 
 func UpdateItem(item types.Item, col *firestore.CollectionRef) {

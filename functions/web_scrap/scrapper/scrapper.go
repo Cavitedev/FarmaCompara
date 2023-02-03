@@ -4,9 +4,9 @@ import (
 	"log"
 
 	"cloud.google.com/go/firestore"
-	"github.com/Cavitedev/farma-compara/web_scrap/scrapper/dosfarma"
-	"github.com/Cavitedev/farma-compara/web_scrap/scrapper/farmaciasdirect"
-	"github.com/Cavitedev/farma-compara/web_scrap/scrapper/okfarma"
+	"github.com/cavitedev/farma-compara/web_scrap/scrapper/dosfarma"
+	"github.com/cavitedev/farma-compara/web_scrap/scrapper/farmaciasdirect"
+	"github.com/cavitedev/farma-compara/web_scrap/scrapper/okfarma"
 )
 
 func Scrap(website string, ref *firestore.CollectionRef) string {
