@@ -8,8 +8,8 @@ import (
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
-	"github.com/Cavitedev/farma-compara/web_scrap/scrapper"
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"github.com/cavitedev/farma-compara/web_scrap/scrapper"
 )
 
 var client *firestore.Client
