@@ -50,3 +50,28 @@ Ir a la carpeta de terraform
 `terraform plan -var-file=prod.tfvars -out build.tfplan`
 
 `terraform apply "build.tfplan"`
+
+## Web
+
+Se crea una aplicación con [Svelte Kit](https://kit.svelte.dev/) en la carpeta `web` con el comando:
+
+`npm create svelte@latest farma-compara`
+
+Seleccionando:
+
+1. "Skeleton project"
+2. "Yes, using TypeScript syntax"
+3. "Yes" (ESLint)
+4. "Yes" (Prettier)
+5. "Playwright" (Yes)
+6. "Vitest" (Yes)
+
+Y luego se ejecuta `npm install` en la carpeta creada.
+
+El contenido del .gitignore se mueve al .gitignore raíz al compartir proyecto git. Para compartir labels y organizar todo en un mismo proyecto. Normalmente se crearían 2 proyectos separados, pero al tratarse del TFG individual combinaré todo en un solo proyecto para que se vea claro el desarrollo y el historial de cambios.
+
+## Firebase
+
+Crear un proyecto en https://firebase.google.com/ asociado al que se creó en Google Cloud y habilitar análiticas.
+
+Añadir app web e inicializarla.
