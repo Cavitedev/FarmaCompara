@@ -74,4 +74,7 @@ El contenido del .gitignore se mueve al .gitignore raíz al compartir proyecto g
 
 Crear un proyecto en https://firebase.google.com/ asociado al que se creó en Google Cloud y habilitar análiticas.
 
-Añadir app web e inicializarla.
+Añadir app web e inicializarla con el proyecto web anterior creando un fichero 
+/lib/firebase.ts con el código de inicialización incluyendo la inicialización de firestore.
+
+Instalar sveltefire `npm i sveltefire`.
