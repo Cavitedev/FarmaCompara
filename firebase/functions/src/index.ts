@@ -1,9 +1,13 @@
-import * as functions from "firebase-functions";
+import {
+  onDocumentWritten,
+} from "firebase-functions/v2/firestore";
+import {setGlobalOptions} from "firebase-functions/v2/options";
 
-export const onItemUpdate = functions.region("europe-west2").firestore
-  .document("items/{itemId}")
-  .onWrite(async (event) => {
-    const after: item = event.after.data() as item;
+setGlobalOptions({region: "europe-west2"});
+
+export const onItemUpdate = onDocumentWritten("items/{itemId}",
+  async (event) => {
+    const after: item = event.data?.after.data() as item;
 
     let name;
     let bestPrice;
@@ -22,11 +26,14 @@ export const onItemUpdate = functions.region("europe-west2").firestore
       }
     }
 
-    event.after.ref.set(
+    event.data?.after.ref.set(
       {name: name, best_price: bestPrice, last_update: lastUpdate},
       {merge: true}
     );
-  });
+  }
+);
+
+
 interface websiteItem {
   available: true;
   image: string;
