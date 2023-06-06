@@ -42,7 +42,9 @@ func Scrap(ref *firestore.CollectionRef) {
 		if err != nil {
 			log.Println("Error parsing " + lastPageLi)
 		}
-		lastPage = int(lastPageI64)
+		if lastPageI64 > int64(lastPage) {
+			lastPage = int(lastPageI64)
+		}
 
 	})
 
