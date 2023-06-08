@@ -14,12 +14,14 @@ export const onItemUpdate = onDocumentWritten("items/{itemId}",
     let lastUpdate;
 
     for (const value of Object.values(after.website_items)) {
+      if (lastUpdate === undefined || value.last_update > lastUpdate) {
+        lastUpdate = value.last_update;
+      }
+
       if (value.available) {
         name = value.name;
 
-        if (lastUpdate === undefined || value.last_update > lastUpdate) {
-          lastUpdate = value.last_update;
-        }
+
         if (bestPrice === undefined || value.price < bestPrice) {
           bestPrice = value.price;
         }
