@@ -11,3 +11,7 @@
 `terraform plan -var-file=prod.tfvars --destroy -out destroy.tfplan`
 
 `terraform apply "destroy.tfplan"`
+
+## Google Token
+
+`gcloud auth print-identity-token`

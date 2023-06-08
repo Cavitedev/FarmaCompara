@@ -38,12 +38,10 @@ func Scrap(ref *firestore.CollectionRef) {
 		items = append(items, item)
 		firestore_utils.UpdateItem(item, ref)
 		time.Sleep(50 * time.Millisecond)
+
+		log.Printf("start \n")
 		h.Attr("class")
 
-	})
-
-	c.OnError(func(r *colly.Response, err error) {
-		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
 	})
 
 	c.Visit("https://okfarma.es/higiene-corporal?id_category=14&n=10000")
@@ -71,7 +69,7 @@ func scrapDetailsPage(item *Item, pageItem *WebsiteItem) {
 
 		price := h.ChildText("#our_price_display")
 		pageItem.Price = utils.ParseSpanishNumberStrToNumber(price)
-		pageItem.Available = h.ChildText("#availability_value span") != "Este producto ya no está disponible"
+		pageItem.Available = h.ChildText("span#availability_value") != "Este producto ya no está disponible"
 		item.Ref = h.ChildAttr("#product_reference>span", "content")
 	})
 
