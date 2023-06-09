@@ -49,6 +49,7 @@ resource "google_cloudfunctions2_function" "web_scrap" {
     available_memory      = "256Mi"
     ingress_settings      = "ALLOW_ALL"
     service_account_email = google_service_account.function-sa.email
+    max_instance_request_concurrency = 1
   }
 
 

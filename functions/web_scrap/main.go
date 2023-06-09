@@ -3,6 +3,7 @@ package web_scrap
 import (
 	"context"
 	"encoding/json"
+
 	"log"
 	"net/http"
 
@@ -15,7 +16,12 @@ import (
 var client *firestore.Client
 var ctx context.Context
 
+type IP struct {
+	Query string
+}
+
 func init() {
+
 	ctx = context.Background()
 	conf := &firebase.Config{ProjectID: "farma-compara"}
 

@@ -38,8 +38,6 @@ func Scrap(ref *firestore.CollectionRef) {
 		items = append(items, item)
 		firestore_utils.UpdateItem(item, ref)
 		time.Sleep(50 * time.Millisecond)
-
-		log.Printf("start \n")
 		h.Attr("class")
 
 	})

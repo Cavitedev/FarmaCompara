@@ -21,16 +21,19 @@ var page int = 1
 func Scrap(ref *firestore.CollectionRef) {
 
 	log.Println(Domain)
-
 	items := []Item{}
 	c := colly.NewCollector(
 		// colly.Async(true),
 		colly.AllowedDomains(Domain),
 	)
 
-	c.OnHTML("#js-product-list", func(h *colly.HTMLElement) {
+	c.SetRequestTimeout(30 * time.Second)
 
-		itemCount = 0
+	c.OnError(func(r *colly.Response, err error) {
+		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
+
+	c.OnHTML("#js-product-list", func(h *colly.HTMLElement) {
 
 		h.ForEach(".item", func(_ int, e *colly.HTMLElement) {
 
@@ -53,8 +56,11 @@ func Scrap(ref *firestore.CollectionRef) {
 
 	})
 
-	for itemCount > 0 {
+	for itemCount > 0 && page < 100 {
+		itemCount = 0
+		log.Printf("Scrapping https://www.dosfarma.com/higiene/corporal/?page=%v", page)
 		c.Visit(fmt.Sprintf("https://www.dosfarma.com/higiene/corporal/?page=%v", page))
+		time.Sleep(50 * time.Millisecond)
 		page++
 		log.Printf("Scrapped %v items on page %v", itemCount, page)
 	}
