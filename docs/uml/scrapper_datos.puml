@@ -1,0 +1,47 @@
+@startuml scrapper_datos
+scale 2
+
+class Item{
+    string ref
+    ..
+    string name
+    double best_price
+    time last_update
+    string[] website_names
+    int websites_count
+}
+
+class WebsiteItem{
+    string name
+    double price
+    string url
+    time last_update
+    string image
+    bool available
+}
+
+Item "[Website_Name]" --> "1" WebsiteItem
+
+class DeliveryFees{
+
+}
+
+class DeliveryFee{
+    string url
+
+}
+
+class Location{
+
+}
+
+class PriceRange{
+    double price
+    double min
+    double max
+}
+
+DeliveryFees "[Website_Name]" --> "1" DeliveryFee
+DeliveryFee "[Location_Name]" --> "1" Location
+Location "1" *-- "1..*" PriceRange
+@enduml
