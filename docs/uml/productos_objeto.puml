@@ -1,0 +1,70 @@
+@startuml producto_objetos
+scale 2
+
+object Item1{
+    ref = 1
+    quantity = 2
+}
+
+map WebsiteItems1{
+    dosfarma =>
+    okfarma =>
+}
+
+Item1 *-- WebsiteItems1
+
+object dosfarma1 {
+    price = 9.00
+}
+
+object okfarma1{
+    price = 6.00
+}
+
+WebsiteItems1::dosfarma --> dosfarma1
+WebsiteItems1::okfarma --> okfarma1
+
+object Item2{
+    ref = 2
+    quantity = 1
+}
+
+
+map WebsiteItems2{
+    dosfarma =>
+}
+
+Item2 *-- WebsiteItems2
+
+object dosfarma2 {
+    price = 40.00
+}
+
+
+WebsiteItems2::dosfarma --> dosfarma2
+
+
+object Item3{
+    ref = 3
+    quantity = 1
+}
+
+map WebsiteItems3{
+    dosfarma =>
+    okfarma =>
+}
+
+Item3 *-- WebsiteItems3
+
+object dosfarma3 {
+    price = 10.00
+}
+
+object okfarma3{
+    price = 7.00
+}
+
+WebsiteItems3::dosfarma --> dosfarma3
+WebsiteItems3::okfarma --> okfarma3
+
+@enduml

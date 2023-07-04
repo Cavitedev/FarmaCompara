@@ -1,27 +1,37 @@
-import {
-  onDocumentWritten,
-} from "firebase-functions/v2/firestore";
+import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {setGlobalOptions} from "firebase-functions/v2/options";
+import {initializeApp} from "firebase-admin/app";
+import {getFirestore} from "firebase-admin/firestore";
 
 setGlobalOptions({region: "europe-west2"});
 
-export const onItemUpdate = onDocumentWritten("items/{itemId}",
+initializeApp();
+const db = getFirestore();
+
+db.settings({ignoreUndefinedProperties: true});
+
+export const onItemUpdate = onDocumentWritten(
+  "items/{itemId}",
   async (event) => {
     const after: item = event.data?.after.data() as item;
 
     let name;
     let bestPrice;
     let lastUpdate;
+    const websiteNames = Object.keys(after.website_items);
 
-    for (const value of Object.values(after.website_items)) {
+    const websiteIterable = Object.values(after.website_items);
+
+    const websitesCount = websiteIterable.length;
+
+
+    for (const value of websiteIterable) {
       if (lastUpdate === undefined || value.last_update > lastUpdate) {
         lastUpdate = value.last_update;
       }
+      name = value.name;
 
       if (value.available) {
-        name = value.name;
-
-
         if (bestPrice === undefined || value.price < bestPrice) {
           bestPrice = value.price;
         }
@@ -29,12 +39,17 @@ export const onItemUpdate = onDocumentWritten("items/{itemId}",
     }
 
     event.data?.after.ref.set(
-      {name: name, best_price: bestPrice, last_update: lastUpdate},
+      {
+        name: name,
+        best_price: bestPrice,
+        last_update: lastUpdate,
+        websites_count: websitesCount,
+        website_names: websiteNames,
+      },
       {merge: true}
     );
   }
 );
-
 
 interface websiteItem {
   available: true;
@@ -47,5 +62,8 @@ interface websiteItem {
 
 interface item {
   ref: string;
-  website_items: { [key: string]: websiteItem };
+  name: string;
+  best_price: number;
+  last_update: Date;
+  website_items: Map<string, websiteItem>;
 }

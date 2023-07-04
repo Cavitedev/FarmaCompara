@@ -1,0 +1,76 @@
+@startuml precios_envio_objeto
+scale 2
+
+object dosfarma_delivery_fee{
+}
+
+map dosfarmaLocations{
+    spain =>
+}
+
+object dosfarmaSpain{
+
+}
+
+map dosfarmaPrices{
+    0 =>
+    1 =>
+}
+
+object dosfarmaPrice0{
+    price = 4
+    min = 0
+    max = 49.00
+}
+
+object dosfarmaPrice1{
+    price = 0
+    min = 49.01
+}
+dosfarma_delivery_fee *-- dosfarmaLocations
+dosfarmaLocations::spain --> dosfarmaSpain
+
+dosfarmaSpain *-- dosfarmaPrices
+
+
+dosfarmaPrices::0 --> dosfarmaPrice0
+dosfarmaPrices::1 --> dosfarmaPrice1
+
+
+
+object okfarma_delivery_fee{
+}
+
+map okfarmaLocations{
+    spain =>
+}
+
+object okfarmaSpain{
+
+}
+
+map okfarmaPrices{
+    0 =>
+    1 =>
+}
+
+object okfarmaPrice0{
+    price = 4
+    min = 0
+    max = 48.99
+}
+
+object okfarmaPrice1{
+    price = 0
+    min = 49.00
+}
+okfarma_delivery_fee *-- okfarmaLocations
+okfarmaLocations::spain --> okfarmaSpain
+
+okfarmaSpain *-- okfarmaPrices
+
+
+okfarmaPrices::0 --> okfarmaPrice0
+okfarmaPrices::1 --> okfarmaPrice1
+
+@enduml
