@@ -1,0 +1,54 @@
+@startuml flutter_app_arquitectura
+scale 2
+
+
+actor usuario
+
+Boundary Widgets #AliceBlue
+
+
+Control browser_notifier as "BrowserNotifier" #STRATEGY
+
+Control browser_state as "BrowserState" #STRATEGY
+
+entity items_fetch as "ItemsFetch" #LightCoral
+entity firestore_failuse as "FirestoreFailure" #LightCoral
+entity ItemsBrowseQuery as "ItemsBrowseQuery" #TECHNOLOGY
+Control i_items_repository as "ItemsRepository" #TECHNOLOGY
+
+usuario --  Widgets
+
+Widgets --> browser_notifier
+
+browser_notifier -- i_items_repository
+
+i_items_repository -- items_fetch
+i_items_repository -- firestore_failuse
+
+browser_notifier -- browser_state
+
+browser_state -> Widgets
+browser_state -- ItemsBrowseQuery
+
+note "presentation" as presentation #AliceBlue
+
+presentation .. Widgets
+
+note "application" as application #STRATEGY
+browser_notifier .. application
+browser_state .. application
+
+
+note "domain" as domain #LightCoral
+
+items_fetch .. domain
+firestore_failuse .. domain
+
+
+note "infrastructure" as infrastructure #TECHNOLOGY
+
+ItemsBrowseQuery .. infrastructure
+i_items_repository .. infrastructure
+
+
+@enduml
