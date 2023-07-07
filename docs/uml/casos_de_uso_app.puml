@@ -1,10 +1,10 @@
-@startuml casos_de_uso
+@startuml casos_de_uso_app
 scale 2
 left to right direction
 
 
 actor Usuario as "Usuario de la aplicación"
-actor Firebase
+actor Firebase as "Firestore"
 
 actor Algolia
 
