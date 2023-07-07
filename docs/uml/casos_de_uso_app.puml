@@ -1,0 +1,68 @@
+@startuml casos_de_uso
+left to right direction
+
+
+actor Usuario as "Usuario de la aplicación"
+actor Firebase
+
+actor Algolia
+
+
+package App as "Farma Compara Aplicación"{
+
+    
+    rectangle Listado as "Pantalla de listado"{
+        usecase Refrescar
+        usecase OrdenProd as "Cambiar orden"
+        usecase BusquedaTexto as "Cambiar texto de búsqueda"
+
+        usecase ListarProductos as "Listar productos"
+        usecase ListarSinFiltros as "Listar sin filtros"
+        usecase ListarConFiltros as "Listar con filtros"
+
+        usecase ConsultarProducto as "Consultar Producto"
+    }
+
+    rectangle Detalles as "Pantalla de detalles"{
+        usecase Comprar
+    }
+
+    rectangle Compra as "Pantalla de compra"{
+        usecase ActualizarCantidad as "Actualizar cantidad producto"
+        usecase IrPaginaEnvios as "Ir página de envios"
+        usecase CambiarEnvio as "Cambiar destino de envio"
+    }
+
+    usecase ConsultarCompra as "Consultar Compra"
+
+    
+
+}
+
+Usuario -- Refrescar
+Usuario -- OrdenProd
+Usuario -- BusquedaTexto
+Usuario -- ConsultarProducto
+Usuario -- ConsultarCompra
+Usuario -- Comprar
+Usuario -- ActualizarCantidad
+Usuario -- IrPaginaEnvios
+Usuario -- CambiarEnvio
+
+Refrescar .> ListarProductos : include
+OrdenProd .> ListarProductos : include
+BusquedaTexto .> ListarProductos : include
+
+
+
+ListarProductos <|-- ListarSinFiltros
+ListarProductos <|-- ListarConFiltros
+
+ListarProductos --- Firebase
+ListarConFiltros -- Algolia
+
+
+
+
+
+@enduml
