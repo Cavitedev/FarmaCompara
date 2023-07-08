@@ -84,6 +84,7 @@ EliminarProducto <. VolverAAñadir : extends
 LeerPreciosDeEnvio <.. MotrarErrorEnvio : extends
 MotrarErrorEnvio <. RefrescarPreciosEnvio : extends
 CambiarEnvio <.. ErrorCalculoPrecio : extends
+LeerPreciosDeEnvio <.. RefrescarPreciosEnvio  : include
 
 ListarProductos <|-- ListarSinFiltros
 ListarProductos <|-- ListarConFiltros
