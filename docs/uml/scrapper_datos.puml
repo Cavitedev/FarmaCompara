@@ -1,4 +1,4 @@
-@startuml scrapper_datos
+@startuml scraper_datos
 scale 2
 
 class Item{
