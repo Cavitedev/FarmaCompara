@@ -1,0 +1,42 @@
+@startuml web_scraping_secuencia
+scale 2
+
+activate Scrapper
+
+activate Web
+Scrapper -> Web: HTTP GET listado de productos
+Web --> Scrapper: HTML con los productos
+deactivate Web
+
+
+loop for each item
+Scrapper -[hidden]-> Web
+activate Web
+Scrapper -> Web: HTTP GET página detalles productos
+Web --> Scrapper: HTML con los detalles del producto
+deactivate Web
+
+activate Firebase
+Scrapper -> Firebase: Escritura/Actualización del producto 
+Firebase --> Scrapper: Resultado de la operación
+deactivate Firebase
+
+Scrapper -[hidden]-> Web
+end
+
+Scrapper -[hidden]-> Web
+activate Web
+Scrapper -> Web: HTTP GET página de envíos
+Web --> Scrapper: HTML con los envíos
+deactivate Web
+
+activate Firebase
+Scrapper -> Firebase: Escritura/Actualización del envío 
+Firebase --> Scrapper: Resultado de la operación
+deactivate Firebase
+
+
+Scrapper -[hidden]-> Web
+
+
+@enduml

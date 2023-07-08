@@ -50,3 +50,20 @@ Ir a la carpeta de terraform
 `terraform plan -var-file=prod.tfvars -out build.tfplan`
 
 `terraform apply "build.tfplan"`
+
+
+
+## Firebase
+
+Crear un proyecto en https://firebase.google.com/ asociado al que se creó en Google Cloud.
+
+ir a la carpeta de firebase
+
+`cd firebase`
+
+y hacer un deploy con la configuración allí establecida
+
+`firebase deploy`
+
+## Flutter
+

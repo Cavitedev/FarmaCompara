@@ -1,0 +1,97 @@
+@startuml casos_de_uso_app
+scale 2
+left to right direction
+
+actor Usuario as "Usuario de la aplicación"
+
+
+actor Algolia
+actor Firebase as "Firestore"
+
+
+
+
+package App as "Farma Compara Aplicación"{
+
+    
+    rectangle Listado as "Pantalla de listado"{
+        usecase Refrescar
+        usecase OrdenProd as "Cambiar orden"
+        usecase BusquedaTexto as "Cambiar texto de búsqueda"
+
+        usecase ListarProductos as "Listar productos"
+        usecase ListarSinFiltros as "Listar sin filtros"
+        usecase ListarConFiltros as "Listar con filtros"
+
+        usecase ErrorListado as "Error al listar los productos"
+
+        usecase ConsultarProducto as "Consultar Producto"
+    }
+
+    rectangle Detalles as "Pantalla de detalles"{
+        usecase Comprar
+        usecase Visitar_Pagina as "Visitar página original"
+    }
+    usecase DeshacerCompra as "Deshacer Compra"
+
+
+    rectangle Compra as "Pantalla de compra"{
+        usecase ActualizarCantidad as "Actualizar cantidad producto"
+        usecase IrPaginaEnvios as "Ir página de envios"
+        usecase CambiarEnvio as "Cambiar destino de envio"
+        usecase LeerPreciosDeEnvio as "Leer precios de envio"
+        
+        usecase MotrarErrorEnvio as "Mostrar error envio"
+        usecase RefrescarPreciosEnvio as "Refrescar precios de envio"
+
+        usecase ErrorCalculoPrecio as "Error al calcular el coste óptimo"
+    }
+
+    usecase EliminarProducto as "Eliminar eroducto"
+    usecase VolverAAñadir as "Volver a añadir producto"
+
+    usecase ConsultarCompra as "Consultar Compra"
+
+    
+
+}
+
+Usuario -- Refrescar
+Usuario -- OrdenProd
+Usuario -- BusquedaTexto
+Usuario -- ConsultarProducto
+Usuario -- ConsultarCompra
+Usuario -- Comprar
+Usuario -- ActualizarCantidad
+Usuario -- IrPaginaEnvios
+Usuario -- CambiarEnvio
+Usuario -- Visitar_Pagina
+
+
+ListarProductos --- Firebase
+LeerPreciosDeEnvio -- Firebase
+ListarConFiltros -- Algolia
+
+Refrescar .up.> ListarProductos : include
+OrdenProd .left.> ListarProductos : include
+BusquedaTexto .> ListarProductos : include
+ListarProductos <.. ErrorListado : extends
+
+Comprar <.. DeshacerCompra : extends
+ActualizarCantidad <.. EliminarProducto : extends
+EliminarProducto <. VolverAAñadir : extends
+
+LeerPreciosDeEnvio <.. MotrarErrorEnvio : extends
+MotrarErrorEnvio <. RefrescarPreciosEnvio : extends
+CambiarEnvio <.. ErrorCalculoPrecio : extends
+LeerPreciosDeEnvio <.. RefrescarPreciosEnvio  : include
+
+ListarProductos <|-- ListarSinFiltros
+ListarProductos <|-- ListarConFiltros
+
+
+
+
+
+
+@enduml

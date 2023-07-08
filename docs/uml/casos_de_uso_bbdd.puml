@@ -1,0 +1,40 @@
+@startuml casos_de_uso_bbdd
+scale 2
+left to right direction
+
+Actor App as "Aplicación móvil"
+Actor Scrapper
+Actor Algolia
+
+package GoogleCloud as "Google Cloud"{
+    usecase ActualizarIndices as "Actualizar índices"
+
+
+    package Firebase as "Base de datos de Firebase (Firestore)"{
+        rectangle Productos{
+            usecase ActualizarProductos as "Actualizar productos"
+            usecase LeerProductos as "Actualizar productos"
+        }
+
+       rectangle Envios as "Costes de envio"{
+            usecase ActualizarEnvios as "Actualizar envios"
+            usecase LeerEnvios as "Leer envios"
+        }
+
+        
+    }
+
+    ActualizarProductos ..> ActualizarIndices: "include"
+
+}
+
+
+Scrapper -- ActualizarProductos
+Scrapper -- ActualizarEnvios
+App -- LeerProductos
+App -- LeerEnvios
+ActualizarIndices -- Algolia
+
+
+
+@enduml

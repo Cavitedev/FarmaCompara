@@ -1,0 +1,61 @@
+@startuml despliegue
+scale 2
+left to right direction
+
+
+cloud GoogleCloud as "Google Cloud" {
+    Database Firestore[
+    Firestore
+    ]
+
+    component Scrap_Cloud_Function[
+    Scrap Websites
+    Google Cloud Function
+    ]
+
+    component index_algolia
+}
+
+
+cloud Algolia {
+    component P2RUM0HY1N {
+        File name_algolia
+        File name_algolia_name_asc
+        File name_algolia_name_desc
+        File name_algolia_best_price_asc
+        File name_algolia_last_update_desc
+        File name_algolia_best_price_desc
+    }
+}
+
+cloud Farmacia as "Farmacia Online"
+
+node Dev as "Desarrollador" <<ordenador>>  {
+
+
+    component farma_compara_web_scraper
+}
+
+Scrap_Cloud_Function --> Firestore
+Scrap_Cloud_Function --> Farmacia
+Firestore --> index_algolia
+
+index_algolia --> P2RUM0HY1N
+
+farma_compara_web_scraper --> Firestore
+farma_compara_web_scraper --> Farmacia
+
+
+node Usuario <<Móvil>> {
+    component Flutter as "farma_compara_flutter"{
+
+    }
+
+}
+
+Flutter --> Firestore
+Flutter --> P2RUM0HY1N
+Flutter --> Farmacia : "Imágenes"
+
+
+@enduml
