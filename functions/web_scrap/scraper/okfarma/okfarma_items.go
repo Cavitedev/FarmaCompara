@@ -6,17 +6,12 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/cavitedev/farma-compara/web_scrap/firestore_utils"
-	. "github.com/cavitedev/farma-compara/web_scrap/scrapper/types"
+	. "github.com/cavitedev/farma-compara/web_scrap/scraper/types"
 	"github.com/cavitedev/farma-compara/web_scrap/utils"
 	"github.com/gocolly/colly/v2"
 )
 
-const websiteName string = "okfarma"
-const Domain string = "okfarma.es"
-
-func Scrap(ref *firestore.CollectionRef) {
-
-	log.Println(Domain)
+func ScrapItems(client *firestore.Client) {
 
 	items := []Item{}
 	c := colly.NewCollector(
@@ -36,8 +31,9 @@ func Scrap(ref *firestore.CollectionRef) {
 		}
 		item.WebsiteItems[websiteName] = pageItem
 		items = append(items, item)
-		firestore_utils.UpdateItem(item, ref)
+		firestore_utils.UpdateItem(item, client)
 		time.Sleep(50 * time.Millisecond)
+
 		h.Attr("class")
 
 	})
