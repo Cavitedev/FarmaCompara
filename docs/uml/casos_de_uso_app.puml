@@ -18,13 +18,13 @@ package App as "Farma Compara Aplicación"{
         usecase Refrescar
         usecase OrdenProd as "Cambiar orden"
         usecase BusquedaTexto as "Cambiar texto de búsqueda"
+        usecase FiltrarFarmacias as "Filtrar Farmacias"
 
         usecase ListarProductos as "Listar productos"
         usecase ListarSinFiltros as "Listar sin filtros"
         usecase ListarConFiltros as "Listar con filtros"
 
         usecase ErrorListado as "Error al listar los productos"
-
         usecase ConsultarProducto as "Consultar Producto"
     }
 
@@ -66,6 +66,7 @@ Usuario -- ActualizarCantidad
 Usuario -- IrPaginaEnvios
 Usuario -- CambiarEnvio
 Usuario -- Visitar_Pagina
+Usuario -- FiltrarFarmacias
 
 
 ListarProductos --- Firebase
@@ -75,6 +76,7 @@ ListarConFiltros -- Algolia
 Refrescar .up.> ListarProductos : include
 OrdenProd .left.> ListarProductos : include
 BusquedaTexto .> ListarProductos : include
+FiltrarFarmacias .> ListarProductos : include
 ListarProductos <.. ErrorListado : extends
 
 Comprar <.. DeshacerCompra : extends
